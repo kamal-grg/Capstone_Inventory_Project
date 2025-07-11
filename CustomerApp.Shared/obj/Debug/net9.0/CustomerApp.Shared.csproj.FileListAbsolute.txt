@@ -1,0 +1,11 @@
+H:\CapstoneInventory\CustomerApp.Shared\bin\Debug\net9.0\CustomerApp.Shared.deps.json
+H:\CapstoneInventory\CustomerApp.Shared\bin\Debug\net9.0\CustomerApp.Shared.dll
+H:\CapstoneInventory\CustomerApp.Shared\bin\Debug\net9.0\CustomerApp.Shared.pdb
+H:\CapstoneInventory\CustomerApp.Shared\obj\Debug\net9.0\CustomerApp.Shared.GeneratedMSBuildEditorConfig.editorconfig
+H:\CapstoneInventory\CustomerApp.Shared\obj\Debug\net9.0\CustomerApp.Shared.AssemblyInfoInputs.cache
+H:\CapstoneInventory\CustomerApp.Shared\obj\Debug\net9.0\CustomerApp.Shared.AssemblyInfo.cs
+H:\CapstoneInventory\CustomerApp.Shared\obj\Debug\net9.0\CustomerApp.Shared.csproj.CoreCompileInputs.cache
+H:\CapstoneInventory\CustomerApp.Shared\obj\Debug\net9.0\CustomerApp.Shared.dll
+H:\CapstoneInventory\CustomerApp.Shared\obj\Debug\net9.0\refint\CustomerApp.Shared.dll
+H:\CapstoneInventory\CustomerApp.Shared\obj\Debug\net9.0\CustomerApp.Shared.pdb
+H:\CapstoneInventory\CustomerApp.Shared\obj\Debug\net9.0\ref\CustomerApp.Shared.dll

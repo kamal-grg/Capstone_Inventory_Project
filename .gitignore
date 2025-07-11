@@ -1,0 +1,6 @@
+# .NET-specific ignores
+bin/
+obj/
+.vs/
+*.user
+*.suo

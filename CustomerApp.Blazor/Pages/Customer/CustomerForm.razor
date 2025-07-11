@@ -1,0 +1,38 @@
+@using CustomerApp.Shared.Models
+@code {
+    [Parameter]
+    public CustomerDto FormModel { get; set; } = new();
+
+    [Parameter]
+    public EventCallback OnCancel { get; set; }
+
+    [Parameter]
+    public EventCallback<CustomerDto> OnSubmit { get; set; }
+
+    private async Task HandleValidSubmit()
+    {
+        await OnSubmit.InvokeAsync(FormModel);
+    }
+}
+
+<EditForm Model="FormModel" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="mb-3">
+        <label>Full Name</label>
+        <InputText class="form-control" @bind-Value="FormModel.FullName" />
+        <ValidationMessage For="@(() => FormModel.FullName)" />
+    </div>
+
+    <div class="mb-3">
+        <label>Email</label>
+        <InputText class="form-control" @bind-Value="FormModel.Email" />
+        <ValidationMessage For="@(() => FormModel.Email)" />
+    </div>
+
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-success">Save</button>
+        <button type="button" class="btn btn-secondary" @onclick="OnCancel">Cancel</button>
+    </div>
+</EditForm>

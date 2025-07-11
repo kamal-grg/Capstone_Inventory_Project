@@ -1,0 +1,64 @@
+@code {
+    [Parameter]
+    public string Title { get; set; } = "Confirm";
+
+    [Parameter]
+    public string Message { get; set; } = "Are you sure?";
+
+    [Parameter]
+    public string ConfirmButtonText { get; set; } = "Yes";
+
+    [Parameter]
+    public string CancelButtonText { get; set; } = "Cancel";
+
+    [Parameter]
+    public string ConfirmButtonClass { get; set; } = "btn btn-danger";
+
+    [Parameter]
+    public string CancelButtonClass { get; set; } = "btn btn-secondary";
+
+    [Parameter]
+    public bool IsVisible { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> IsVisibleChanged { get; set; }
+
+    [Parameter]
+    public EventCallback OnConfirmed { get; set; }
+
+    [Parameter]
+    public EventCallback OnCancelled { get; set; }
+
+    private async Task Confirm()
+    {
+        await OnConfirmed.InvokeAsync();
+        await IsVisibleChanged.InvokeAsync(false);
+    }
+
+    private async Task Cancel()
+    {
+        await OnCancelled.InvokeAsync();
+        await IsVisibleChanged.InvokeAsync(false);
+    }
+}
+
+@if (IsVisible)
+{
+    <div class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title">@Title</h5>
+                    <button type="button" class="btn-close" @onclick="Cancel"></button>
+                </div>
+                <div class="modal-body">
+                    <p>@Message</p>
+                </div>
+                <div class="modal-footer">
+                    <button class="@CancelButtonClass" @onclick="Cancel">@CancelButtonText</button>
+                    <button class="@ConfirmButtonClass" @onclick="Confirm">@ConfirmButtonText</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}

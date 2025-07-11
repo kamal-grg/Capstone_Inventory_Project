@@ -1,0 +1,43 @@
+@using CustomerApp.Shared.Models
+@code {
+    [Parameter]
+    public List<CustomerDto>? Customers { get; set; }
+
+    [Parameter]
+    public EventCallback<CustomerDto> OnEdit { get; set; }
+
+    [Parameter]
+    public EventCallback<int> OnDelete { get; set; }
+}
+
+@if (Customers == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Full Name</th>
+                <th>Email</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var customer in Customers)
+            {
+                <tr>
+                    <td>@customer.Id</td>
+                    <td>@customer.FullName</td>
+                    <td>@customer.Email</td>
+                    <td>
+                        <button class="btn btn-sm btn-warning me-1" @onclick="() => OnEdit.InvokeAsync(customer)">Edit</button>
+                        <button class="btn btn-sm btn-danger" @onclick="() => OnDelete.InvokeAsync(customer.Id)">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

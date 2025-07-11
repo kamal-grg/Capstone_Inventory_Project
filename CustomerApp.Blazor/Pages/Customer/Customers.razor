@@ -1,0 +1,132 @@
+@page "/customers"
+@using CustomerApp.Blazor.Services
+@using CustomerApp.Shared.Models
+@using CustomerApp.Blazor.Shared.Components
+@inject ToastService Toast
+@inject HttpClient Http
+
+<h3>Customer Management</h3>
+<LoadingSpinner IsVisible="@isLoading" />
+
+<button class="btn btn-primary mb-2" @onclick="ShowCreateForm">+ Add Customer</button>
+
+<CustomerTable Customers="@customers"
+               OnEdit="ShowEditForm"
+               OnDelete="AskDelete" />
+
+@if (showModal)
+{
+    <div class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.4)">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">@((editMode ? "Edit" : "Add") + " Customer")</h5>
+                    <button type="button" class="btn-close" @onclick="CloseForm"></button>
+                </div>
+                <div class="modal-body">
+                    <CustomerForm FormModel="formModel" OnCancel="CloseForm" OnSubmit="HandleSubmit" />
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<ConfirmDialog Title="Delete Confirmation"
+               Message="Are you sure you want to delete this customer?"
+               IsVisible="@showConfirmDialog"
+               IsVisibleChanged="@( (bool v) => showConfirmDialog = v )"
+               OnConfirmed="ConfirmDelete" />
+
+@code {
+    private List<CustomerDto>? customers;
+    private CustomerDto formModel = new();
+    private bool showModal = false;
+    private bool editMode = false;
+private bool isLoading = false;
+    private bool showConfirmDialog = false;
+    private int customerIdToDelete;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadCustomers();
+    }
+
+    private async Task LoadCustomers()
+    {
+        isLoading = true;
+    customers = await Http.GetFromJsonAsync<List<CustomerDto>>("customer");
+    isLoading = false;}
+
+    private void ShowCreateForm()
+    {
+        formModel = new CustomerDto();
+        editMode = false;
+        showModal = true;
+    }
+
+    private void ShowEditForm(CustomerDto customer)
+    {
+        formModel = new CustomerDto
+        {
+            Id = customer.Id,
+            FullName = customer.FullName,
+            Email = customer.Email
+        };
+        editMode = true;
+        showModal = true;
+    }
+
+   private async Task HandleSubmit(CustomerDto customer)
+{
+    isLoading = true;
+
+    try
+    {
+        HttpResponseMessage response;
+        if (editMode)
+            response = await Http.PutAsJsonAsync($"customer/{customer.Id}", customer);
+        else
+            response = await Http.PostAsJsonAsync("customer", customer);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            Toast.ShowToast("Failed to save customer.", ToastLevel.Error);
+        }
+        else
+        {
+            Toast.ShowToast(editMode ? "Customer updated." : "Customer created.", ToastLevel.Success);
+        }
+
+        showModal = false;
+        await LoadCustomers();
+    }
+    finally
+    {
+        isLoading = false;
+    }
+}
+
+    private void CloseForm()
+    {
+        showModal = false;
+    }
+
+    private void AskDelete(int id)
+    {
+        customerIdToDelete = id;
+        showConfirmDialog = true;
+    }
+
+    private async Task ConfirmDelete()
+{
+    var result = await Http.DeleteAsync($"customer/{customerIdToDelete}");
+    if (result.IsSuccessStatusCode)
+        Toast.ShowToast("Customer deleted.", ToastLevel.Success);
+    else
+        Toast.ShowToast("Failed to delete customer.", ToastLevel.Error);
+
+    showConfirmDialog = false;
+    await LoadCustomers();
+}
+
+}

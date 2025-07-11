@@ -1,0 +1,57 @@
+@using CustomerApp.Blazor.Services
+@inject ToastService ToastService
+@if (!string.IsNullOrEmpty(message))
+{
+    <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1055;">
+        <div class="toast show align-items-center text-white @toastClass" role="alert">
+            <div class="d-flex">
+                <div class="toast-body">@message</div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" @onclick="HideToast"></button>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private string? message;
+    private string toastClass = "bg-info";
+    private System.Timers.Timer? timer;
+
+    protected override void OnInitialized()
+    {
+        ToastService.OnShow += ShowToast;
+    }
+
+    private void ShowToast(string msg, ToastLevel level)
+    {
+        message = msg;
+        toastClass = level switch
+        {
+            ToastLevel.Success => "bg-success",
+            ToastLevel.Error => "bg-danger",
+            ToastLevel.Warning => "bg-warning",
+            _ => "bg-info"
+        };
+
+        StateHasChanged();
+
+        timer?.Stop();
+        timer = new System.Timers.Timer(3000);
+        timer.Elapsed += (_, _) => HideToast();
+        timer.AutoReset = false;
+        timer.Start();
+    }
+
+    private void HideToast()
+    {
+        message = null;
+        timer?.Stop();
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        ToastService.OnShow -= ShowToast;
+        timer?.Dispose();
+    }
+}
