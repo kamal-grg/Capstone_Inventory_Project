@@ -1,0 +1,35 @@
+name: Deploy Blazor
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 8.0.x
+
+    - name: Restore Blazor dependencies
+      run: dotnet restore ./CustomerApp.Blazor/CustomerApp.Blazor.csproj
+
+    - name: Build Blazor app
+      run: dotnet build ./CustomerApp.Blazor/CustomerApp.Blazor.csproj --configuration Release
+
+    - name: Publish Blazor app
+      run: dotnet publish ./CustomerApp.Blazor/CustomerApp.Blazor.csproj --configuration Release --output ./publish
+
+    - name: Deploy Blazor to Azure
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: kamalcusgui
+        publish-profile: ${{ secrets.PUBLISH_PROFILE_BLAZOR }}
+        package: ./publish
