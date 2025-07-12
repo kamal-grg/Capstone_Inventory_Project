@@ -167,3 +167,4 @@ H:\CapstoneInventory\CustomerApp.API\obj\Debug\net9.0\CustomerApp.API.genruntime
 H:\CapstoneInventory\CustomerApp.API\obj\Debug\net9.0\ref\CustomerApp.API.dll
 H:\CapstoneInventory\CustomerApp.API\bin\Debug\net9.0\AutoMapper.dll
 H:\CapstoneInventory\CustomerApp.API\bin\Debug\net9.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
+H:\CapstoneInventory\CustomerApp.API\obj\Debug\net9.0\CustomerApp.API.sourcelink.json
