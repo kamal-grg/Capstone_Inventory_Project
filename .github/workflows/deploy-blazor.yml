@@ -31,5 +31,5 @@ jobs:
       uses: azure/webapps-deploy@v2
       with:
         app-name: kamalcusgui
-        publish-profile: ${{ secrets.PUBLISH_PROFILE_BLAZOR }}
+        publish-profile: ${{ secrets.PUBLISH_PROFILE_UI }}
         package: ./publish
