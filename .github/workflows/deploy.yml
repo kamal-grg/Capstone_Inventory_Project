@@ -1,0 +1,65 @@
+name: Deploy Blazor & API to Azure
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build-and-deploy-api:
+    name: Build and Deploy API
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.x'
+
+      - name: Restore API
+        run: dotnet restore ./CustomerApp.API/CustomerApp.API.csproj
+
+      - name: Build API
+        run: dotnet build ./CustomerApp.API/CustomerApp.API.csproj --no-restore --configuration Release
+
+      - name: Publish API
+        run: dotnet publish ./CustomerApp.API/CustomerApp.API.csproj --configuration Release --output ./api-publish
+
+      - name: Deploy API to Azure
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: kamalcusapi
+          publish-profile: ${{ secrets.PUBLISH_PROFILE_API }}
+          package: ./api-publish
+
+  build-and-deploy-blazor:
+    name: Build and Deploy Blazor
+    runs-on: windows-latest
+    needs: build-and-deploy-api
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.x'
+
+      - name: Restore Blazor
+        run: dotnet restore ./CustomerApp.Blazor/CustomerApp.Blazor.csproj
+
+      - name: Build Blazor
+        run: dotnet build ./CustomerApp.Blazor/CustomerApp.Blazor.csproj --no-restore --configuration Release
+
+      - name: Publish Blazor
+        run: dotnet publish ./CustomerApp.Blazor/CustomerApp.Blazor.csproj --configuration Release --output ./blazor-publish
+
+      - name: Deploy Blazor to Azure
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: kamalcusgui
+          publish-profile: ${{ secrets.PUBLISH_PROFILE_UI }}
+          package: ./blazor-publish
